@@ -151,34 +151,36 @@ def main():
 
 
 def multi(input_data):
-    loaded_model=pk.load(open("neuron_shield.pkl", "rb"))
-    dfinput = pd.read_csv(input_data)
-    #dfinput=dfinput.iloc[1:].reset_index(drop=True)
+    loaded_model = pk.load(open("neuron_shield.pkl", "rb"))
+    std_scaler_loaded = pk.load(open("neuron_scaler.pkl", "rb"))
 
-    st.header('Preview of the Dataset')
+    dfinput = pd.read_csv(input_data)
+
+    st.header("Preview of the Dataset")
     st.dataframe(dfinput)
 
-    dfinput=dfinput.values
-    std_scaler_loaded=pk.load(open("neuron_scaler.pkl", "rb"))
-    std_dfinput=std_scaler_loaded.transform(dfinput)
-    
-    predict=st.button("Click to Predict")
+    features = dfinput[['network_packet_size', 'protocol_type', 'login_attempts',
+                        'session_duration', 'encryption_used', 'ip_reputation_score',
+                        'failed_logins', 'browser_type', 'unusual_time_access']]
+
+    std_dfinput = std_scaler_loaded.transform(features.values)
+
+    predict = st.button("Click to Predict")
 
     if predict:
         prediction = loaded_model.predict(std_dfinput)
-        interchange=[]
+
+        results = []
         for i in prediction:
-            if i==1:
-                newi="signs of lung cancer detected"
-                interchange.append(newi)
-            elif i==0:
-                newi="There is No sign of Lung Cancer Detected"
-                interchange.append(newi)
-            
-        st.subheader('Here is your prediction')
-        prediction_output = pd.Series(interchange, name='Lung Detection results')
-        prediction_id = pd.Series(np.arange(len(interchange)),name="Patient_ID")
-        dfresult = pd.concat([prediction_id, prediction_output], axis=1)
+            if i == 1:
+                results.append("Attack Detected")
+            else:
+                results.append("No Sign of Attack Detected")
+
+        dfresult = dfinput.copy()
+        dfresult["Intrusion Detection Result"] = results
+
+        st.subheader("Prediction Output")
         st.dataframe(dfresult)
         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
         
