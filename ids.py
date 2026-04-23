@@ -211,7 +211,7 @@ if selection == "Multiple ID Detection":
     with col2:
         st.image("logo.png", width=120)
 
-    st.text("Make Multiple Prediction of Your Logs")
+    st.markdown(####Make Multiple Prediction of Your Logs")
     uploaded_file = st.file_uploader("", type=["csv"])
 
     if uploaded_file is not None:
