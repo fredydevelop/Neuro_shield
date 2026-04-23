@@ -32,8 +32,8 @@ import pickle as pk
 st.set_page_config(page_title='Intrusion detection system',layout='centered')
 
 with st.sidebar:
-    st.header("Select Menu")
-    selection=st.radio("Navigation options",options=["Single ID Detection", "Multiple ID Detection"]
+    st.header("Main Menu")
+    selection=st.radio("select your options",options=["Single ID Detection", "Multiple ID Detection"]
 )
 
 
@@ -66,10 +66,11 @@ def main():
     col1, col2 = st.columns([1, 3])
 
     with col1:
-        st.image("logo.png", width=120)
+        st.Header("Neuro Shield")
     
     with col2:
-        st.markdown("## Neuro Shield")
+        st.image("logo.png", width=300)
+
 
     network_packet_size = st.number_input("Network Packet Size", min_value=0.0, step=1.0)
     
@@ -190,7 +191,7 @@ if selection == "Single ID Detection":
     main()
 
 if selection == "Multiple ID Detection":
-    st.header("Upload your CSV file here")
+    st.header("Make Multiple Prediction of Your Logs")
     uploaded_file = st.file_uploader("", type=["csv"])
 
     if uploaded_file is not None:
