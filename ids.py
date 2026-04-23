@@ -32,7 +32,7 @@ import pickle as pk
 st.set_page_config(page_title='Intrusion detection system',layout='centered')
 
 with st.sidebar:
-    st.image("logo.jpg",width=250)
+    st.image("logo.png",width=250)
     st.title("Home Page")
     selection=st.radio("select your option",options=["Single ID Detection", "Multiple ID Detection"]
 )
