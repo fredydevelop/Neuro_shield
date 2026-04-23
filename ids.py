@@ -170,7 +170,7 @@ def multi(input_data):
     dfinput = pd.read_csv(input_data)
 
     st.header("Preview of the Dataset")
-    st.dataframe(dfinput)
+    st.dataframe(dfinput,hide_index=True)
 
     features = dfinput[['network_packet_size', 'protocol_type', 'login_attempts',
                         'session_duration', 'encryption_used', 'ip_reputation_score',
