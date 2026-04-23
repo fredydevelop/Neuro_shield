@@ -203,6 +203,14 @@ if selection == "Single ID Detection":
     main()
 
 if selection == "Multiple ID Detection":
+    col1, col2 = st.columns([1, 2])
+
+    with col1:
+        st.header("Neuro Shield")
+    
+    with col2:
+        st.image("logo.png", width=120)
+
     st.header("Make Multiple Prediction of Your Logs")
     uploaded_file = st.file_uploader("", type=["csv"])
 
