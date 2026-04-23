@@ -47,19 +47,27 @@ def filedownload(df):
 
 def IntrusionDetector(givendata):
     loaded_model = pk.load(open("neuron_shield.pkl", "rb"))
-    
-    input_data_as_numpy_array = np.asarray(givendata)
+    std_scaler_loaded = pk.load(open("neuron_scaler.pkl", "rb"))
+
+    input_data_as_numpy_array = np.asarray(givendata, dtype=float)
     input_data_reshaped = input_data_as_numpy_array.reshape(1, -1)
 
-    std_scaler_loaded = pk.load(open("neuron_scaler.pkl", "rb"))
     std_X_resample = std_scaler_loaded.transform(input_data_reshaped)
-
     prediction = loaded_model.predict(std_X_resample)
 
-    if prediction[0] == 1 or prediction[0] == "1":
-        return "Attack Detected"
+    if prediction[0] == 1:
+        result = "Malicious Activity Detected"
+        recommendation = (
+            "Investigate this session immediately, isolate the source if necessary, "
+            "and review related network logs for further suspicious activity."
+        )
     else:
-        return "No Sign of Attack Detected"
+        result = "Normal Traffic"
+        recommendation = (
+            "No immediate threat detected. Continue routine monitoring of the session."
+        )
+
+    return result, recommendation
 
 
 def main():
@@ -147,19 +155,23 @@ def main():
         ):
             st.warning("Please fill in all fields before prediction.")
         else:
-            detectionResult = IntrusionDetector([
-                network_packet_size,
-                protocol_type_value,
-                login_attempts,
-                session_duration,
-                encryption_used_value,
-                ip_reputation_score,
-                failed_logins,
-                browser_type_value,
-                unusual_time_access_value
+            detectionResult, recommendation = IntrusionDetector([
+            network_packet_size,
+            protocol_type_value,
+            login_attempts,
+            session_duration,
+            encryption_used_value,
+            ip_reputation_score,
+            failed_logins,
+            browser_type_value,
+            unusual_time_access_value
             ])
-            st.success(detectionResult)
-
+            
+            st.subheader("Detection Result")
+            st.success(result)
+            
+            st.subheader("Recommendation")
+            st.info(recommendation)
 
 
 
