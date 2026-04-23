@@ -207,7 +207,7 @@ def multi(input_data):
         })
 
         st.subheader("Prediction Output")
-        st.dataframe(dfresult)
+        st.dataframe(dfresult,hide_index=True)
 
         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
         
