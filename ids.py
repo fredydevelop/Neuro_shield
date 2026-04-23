@@ -63,7 +63,7 @@ def IntrusionDetector(givendata):
 
 
 def main():
-    col1, col2 = st.columns([3, 1])
+    col1, col2 = st.columns([1, 2])
 
     with col1:
         st.header("Neuro Shield")
