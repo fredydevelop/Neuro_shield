@@ -168,7 +168,7 @@ def main():
             ])
             
             st.subheader("Detection Result")
-            st.success(result)
+            st.success(detectionResult)
             
             st.subheader("Recommendation")
             st.info(recommendation)
