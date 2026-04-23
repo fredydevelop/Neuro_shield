@@ -44,7 +44,6 @@ def filedownload(df):
     href = f'<a href="data:file/csv;base64,{b64}" download="prediction.csv">Download your prediction</a>'
     return href
 
-
 def IntrusionDetector(givendata):
     loaded_model = pk.load(open("neuron_shield.pkl", "rb"))
     std_scaler_loaded = pk.load(open("neuron_scaler.pkl", "rb"))
@@ -53,37 +52,58 @@ def IntrusionDetector(givendata):
     input_data_reshaped = input_data_as_numpy_array.reshape(1, -1)
 
     std_X_resample = std_scaler_loaded.transform(input_data_reshaped)
+
     prediction = loaded_model.predict(std_X_resample)
 
+    # Confidence score
+    if hasattr(loaded_model, "predict_proba"):
+        probability = loaded_model.predict_proba(std_X_resample)[0]
+        confidence = float(np.max(probability)) * 100
+    else:
+        confidence = 0.0
+
+    # Result, risk level, recommendation, and color
     if prediction[0] == 1:
         result = "Malicious Activity Detected"
+
+        if confidence >= 85:
+            risk_level = "High"
+        elif confidence >= 65:
+            risk_level = "Medium"
+        else:
+            risk_level = "Low"
+
         recommendation = (
             "Investigate this session immediately, isolate the source if necessary, "
-            "and review related network logs for further suspicious activity."
+            "and review related network logs for suspicious behavior."
         )
+
+        alert_color = "red"
+
     else:
         result = "Normal Traffic"
+        risk_level = "Low"
         recommendation = (
             "No immediate threat detected. Continue routine monitoring of the session."
         )
+        alert_color = "green"
 
-    return result, recommendation
+    return result, confidence, risk_level, recommendation, alert_color
 
 
 def main():
-    col1, col2 = st.columns([1, 2])
+    col1, col2 = st.columns([3, 1])
 
     with col1:
         st.header("Neuro Shield")
-    
+
     with col2:
         st.image("logo.png", width=120)
 
-    # Inputs with units
     network_packet_size = st.number_input(
         "Network Packet Size (bytes)", min_value=0.0, step=1.0
     )
-    
+
     protocol_type = st.selectbox("Protocol Type", ("", "TCP", "UDP", "ICMP"))
     if protocol_type == "TCP":
         protocol_type_value = 0
@@ -97,7 +117,7 @@ def main():
     login_attempts = st.number_input(
         "Login Attempts (count)", min_value=0, step=1
     )
-    
+
     session_duration = st.number_input(
         "Session Duration (seconds)", min_value=0.0, step=1.0
     )
@@ -144,8 +164,6 @@ def main():
     else:
         unusual_time_access_value = None
 
-    detectionResult = ""
-
     if st.button("Predict"):
         if (
             protocol_type_value is None
@@ -155,21 +173,31 @@ def main():
         ):
             st.warning("Please fill in all fields before prediction.")
         else:
-            detectionResult, recommendation = IntrusionDetector([
-            network_packet_size,
-            protocol_type_value,
-            login_attempts,
-            session_duration,
-            encryption_used_value,
-            ip_reputation_score,
-            failed_logins,
-            browser_type_value,
-            unusual_time_access_value
+            result, confidence, risk_level, recommendation, alert_color = IntrusionDetector([
+                network_packet_size,
+                protocol_type_value,
+                login_attempts,
+                session_duration,
+                encryption_used_value,
+                ip_reputation_score,
+                failed_logins,
+                browser_type_value,
+                unusual_time_access_value
             ])
-            
+
             st.subheader("Detection Result")
-            st.success(detectionResult)
-            
+
+            if alert_color == "red":
+                st.error(result)
+            else:
+                st.success(result)
+
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Risk Level", risk_level)
+            with col2:
+                st.metric("Confidence Score", f"{confidence:.2f}%")
+
             st.subheader("Recommendation")
             st.info(recommendation)
 
