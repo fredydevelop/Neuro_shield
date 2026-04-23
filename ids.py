@@ -183,18 +183,32 @@ def multi(input_data):
     if predict:
         prediction = loaded_model.predict(std_dfinput)
 
-        results = []
+        detection_results = []
+        recommendations = []
+
         for i in prediction:
             if i == 1:
-                results.append("Attack Detected")
+                detection_results.append("Malicious Activity Detected")
+                recommendations.append("Investigate this session immediately, isolate the source if necessary, and review related network logs.")
             else:
-                results.append("No Sign of Attack Detected")
+                detection_results.append("Normal Traffic")
+                recommendations.append("No immediate threat detected. Continue routine monitoring of the session.")
 
-        dfresult = dfinput.copy()
-        dfresult["Intrusion Detection Result"] = results
+        # Use existing session_id if present, otherwise create one
+        if "session_id" in dfinput.columns:
+            session_ids = dfinput["session_id"]
+        else:
+            session_ids = pd.Series(range(1, len(dfinput) + 1), name="session_id")
+
+        dfresult = pd.DataFrame({
+            "Session ID": session_ids,
+            "Intrusion Detection Result": detection_results,
+            "Recommendation": recommendations
+        })
 
         st.subheader("Prediction Output")
         st.dataframe(dfresult)
+
         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
         
 
