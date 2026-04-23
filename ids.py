@@ -32,9 +32,8 @@ import pickle as pk
 st.set_page_config(page_title='Intrusion detection system',layout='centered')
 
 with st.sidebar:
-    st.image("logo.png",width=250)
-    st.title("Home Page")
-    selection=st.radio("select your option",options=["Single ID Detection", "Multiple ID Detection"]
+    st.header("Select Menu")
+    selection=st.radio("Navigation options",options=["Single ID Detection", "Multiple ID Detection"]
 )
 
 
@@ -64,7 +63,13 @@ def IntrusionDetector(givendata):
 
 
 def main():
-    st.header("Neuro Shield")
+    col1, col2 = st.columns([1, 3])
+
+    with col1:
+        st.image("logo.png", width=120)
+    
+    with col2:
+        st.markdown("## Neuro Shield")
 
     network_packet_size = st.number_input("Network Packet Size", min_value=0.0, step=1.0)
     
