@@ -63,7 +63,7 @@ def IntrusionDetector(givendata):
 
 
 def main():
-    col1, col2 = st.columns([1, 3])
+    col1, col2 = st.columns([3, 1])
 
     with col1:
         st.header("Neuro Shield")
@@ -71,8 +71,10 @@ def main():
     with col2:
         st.image("logo.png", width=120)
 
-
-    network_packet_size = st.number_input("Network Packet Size", min_value=0.0, step=1.0)
+    # Inputs with units
+    network_packet_size = st.number_input(
+        "Network Packet Size (bytes)", min_value=0.0, step=1.0
+    )
     
     protocol_type = st.selectbox("Protocol Type", ("", "TCP", "UDP", "ICMP"))
     if protocol_type == "TCP":
@@ -84,9 +86,13 @@ def main():
     else:
         protocol_type_value = None
 
-    login_attempts = st.number_input("Login Attempts", min_value=0, step=1)
+    login_attempts = st.number_input(
+        "Login Attempts (count)", min_value=0, step=1
+    )
     
-    session_duration = st.number_input("Session Duration", min_value=0.0, step=1.0)
+    session_duration = st.number_input(
+        "Session Duration (seconds)", min_value=0.0, step=1.0
+    )
 
     encryption_used = st.selectbox("Encryption Used", ("", "Yes", "No"))
     if encryption_used == "Yes":
@@ -96,11 +102,17 @@ def main():
     else:
         encryption_used_value = None
 
-    ip_reputation_score = st.number_input("IP Reputation Score", min_value=0.0, step=1.0)
+    ip_reputation_score = st.number_input(
+        "IP Reputation Score (0–100)", min_value=0.0, max_value=100.0, step=1.0
+    )
 
-    failed_logins = st.number_input("Failed Logins", min_value=0, step=1)
+    failed_logins = st.number_input(
+        "Failed Logins (count)", min_value=0, step=1
+    )
 
-    browser_type = st.selectbox("Browser Type", ("", "Chrome", "Firefox", "Safari", "Edge", "Opera", "Other"))
+    browser_type = st.selectbox(
+        "Browser Type", ("", "Chrome", "Firefox", "Safari", "Edge", "Opera", "Other")
+    )
     if browser_type == "Chrome":
         browser_type_value = 0
     elif browser_type == "Firefox":
