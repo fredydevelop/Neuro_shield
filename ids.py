@@ -209,9 +209,7 @@ if selection == "Multiple ID Detection":
         st.header("Neuro Shield")
     
     with col2:
-        st.image("logo.png", width=120)
-
-    st.markdown("####Make Multiple Prediction of Your Logs")
+        st.image("logo.png", width=100)
     uploaded_file = st.file_uploader("", type=["csv"])
 
     if uploaded_file is not None:
