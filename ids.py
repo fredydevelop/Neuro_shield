@@ -69,7 +69,7 @@ def main():
         st.header("Neuro Shield")
     
     with col2:
-        st.image("logo.png", width=300)
+        st.image("logo.png", width=200)
 
 
     network_packet_size = st.number_input("Network Packet Size", min_value=0.0, step=1.0)
